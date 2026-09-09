@@ -10,6 +10,26 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Times New Roman', Times, serif; }
+
+        /* Dinamik Ukuran Kertas via CSS Variable */
+        :root {
+            --paper-width: 210mm;
+            --paper-height: 297mm; /* A4 default */
+            --margin-top: 2cm;
+            --margin-bottom: 2cm;
+            --margin-left: 1cm;
+            --margin-right: 1.5cm;
+        }
+
+        .paper-sheet {
+            width: var(--paper-width);
+            min-height: var(--paper-height);
+            padding-top: var(--margin-top);
+            padding-bottom: var(--margin-bottom);
+            padding-left: var(--margin-left);
+            padding-right: var(--margin-right);
+        }
+
         @media print {
             body * { visibility: hidden; }
             #printable-area, #printable-area * { visibility: visible; }
@@ -17,9 +37,8 @@
                 position: absolute; 
                 left: 0; 
                 top: 0; 
-                width: 100%; 
+                width: var(--paper-width); 
                 margin: 0; 
-                padding: 0; 
                 box-shadow: none !important; 
             }
             .no-print { display: none !important; }
@@ -29,8 +48,8 @@
                 margin-top: 0 !important;
             }
             @page { 
-                size: A4; 
-                margin: 2cm 2cm 2cm 2.5cm; 
+                size: var(--paper-size-print, A4); 
+                margin: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left); 
             }
         }
     </style>
@@ -80,13 +99,22 @@
                 </div>
 
                 <form id="suratForm" class="space-y-4 text-sm">
-                    <!-- Jenis Surat -->
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Pilih Jenis Dokumen</label>
-                        <select id="jenisSurat" onchange="toggleJenisSurat()" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
-                            <option value="tugas">Surat Perintah Tugas (SPT)</option>
-                            <option value="sppd" selected>SPPD Lengkap (2 Halaman)</option>
-                        </select>
+                    <!-- Jenis Surat & Ukuran Kertas -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Jenis Dokumen</label>
+                            <select id="jenisSurat" onchange="toggleJenisSurat()" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <option value="tugas">Surat Perintah Tugas (SPT)</option>
+                                <option value="sppd" selected>SPPD Lengkap (2 Halaman)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Ukuran Kertas</label>
+                            <select id="ukuranKertas" onchange="updatePageLayout()" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <option value="a4" selected>A4 (210 x 297 mm)</option>
+                                <option value="f4">F4 / Folio (215 x 330 mm)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Nomor & Tanggal Surat -->
@@ -203,11 +231,12 @@
                 </form>
             </div>
 
+            <!-- PREVIEW AREA (Margin Kiri 1cm, Kanan 1.5cm) -->
             <div class="lg:col-span-7 bg-white rounded-xl shadow-md p-6 overflow-x-auto flex justify-center">
-                <div id="printable-area" class="w-[210mm] bg-white px-[2.5cm] py-[2cm] text-slate-900 font-serif-custom shadow border relative text-[12pt] leading-snug flex flex-col justify-between" style="padding-left: 2.5cm; padding-right: 2cm; padding-top: 2cm; padding-bottom: 2cm;">
+                <div id="printable-area" class="paper-sheet bg-white text-slate-900 font-serif-custom shadow border relative text-[12pt] leading-snug flex flex-col justify-between">
                     
                     <!-- HALAMAN 1 / SURAT TUGAS ATAU SPPD HALAMAN 1 -->
-                    <div class="min-h-[257mm] flex flex-col justify-between">
+                    <div class="flex flex-col justify-between">
                         <div>
                             <!-- KOP SURAT -->
                             <div class="border-b-4 border-double border-emerald-900 pb-2 mb-2 flex items-center justify-between">
@@ -381,8 +410,8 @@
                         </div>
                     </div>
 
-                    <!-- SPPD HALAMAN 2 -->
-                    <div id="layoutSPPD2" class="page-break min-h-[257mm] flex flex-col justify-between pt-1 border-t-2 border-dashed border-slate-300">
+                    <!-- SPPD HALAMAN 2 (Disatukan dalam Flow / Page Break Terkendali) -->
+                    <div id="layoutSPPD2" class="page-break flex flex-col justify-between pt-4 border-t-2 border-dashed border-slate-300">
                         <div class="space-y-1 text-[12pt]">
                             <!-- BAGIAN ATAS HALAMAN 2 -->
                             <div class="grid grid-cols-2 text-[12pt] border border-slate-800">
@@ -418,7 +447,7 @@
                                     <div class="text-center pt-1 font-semibold">
                                         Selaku Pelaksana Teknis Kegiatan
                                     </div>
-                                    <div class="h-16"></div>
+                                    <div class="h-14"></div>
                                     <div class="text-center font-semibold underline">
                                         <span id="outSppdPegawaiCopy">Dewi Sangadati Rohmah, S.Pd.</span>
                                     </div>
@@ -432,7 +461,7 @@
                             <div class="grid grid-cols-2 text-[12pt] border border-slate-800">
                                 <!-- Kolom Kiri -->
                                 <div class="border-r border-slate-800 flex flex-col justify-between">
-                                    <div class="p-1.5 space-y-1 border-b border-slate-800 min-h-[120px]">
+                                    <div class="p-1.5 space-y-1 border-b border-slate-800 min-h-[110px]">
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-2 font-bold">II.</div>
                                             <div class="col-span-3">Tiba di</div>
@@ -448,17 +477,17 @@
                                         <div class="text-center font-semibold pt-1">
                                             Panitia / Pejabat Tujuan
                                         </div>
-                                        <div class="h-8"></div>
+                                        <div class="h-6"></div>
                                         <div class="text-center text-slate-400">
                                             ...................................................
                                         </div>
                                     </div>
-                                    <div class="p-1.5 min-h-[100px]"></div>
+                                    <div class="p-1.5 min-h-[90px]"></div>
                                 </div>
 
                                 <!-- Kolom Kanan -->
                                 <div class="flex flex-col justify-between">
-                                    <div class="p-1.5 space-y-1 border-b border-slate-800 min-h-[140px]">
+                                    <div class="p-1.5 space-y-1 border-b border-slate-800 min-h-[130px]">
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-5">Berangkat dari</div>
                                             <div class="col-span-1">:</div>
@@ -474,10 +503,10 @@
                                             <div class="col-span-1">:</div>
                                             <div class="col-span-6"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                         </div>
-                                        <div class="text-center font-semibold pt-2">
+                                        <div class="text-center font-semibold pt-1">
                                             Kepala MI Tarbiyatul Ulum
                                         </div>
-                                        <div class="h-6"></div>
+                                        <div class="h-4"></div>
                                         <div class="text-center font-semibold underline">
                                             <span class="outNamaKepsCopy">Sururiyah, S.Pd.I</span>
                                         </div>
@@ -486,7 +515,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="p-1.5 space-y-1 min-h-[160px]">
+                                    <div class="p-1.5 space-y-1 min-h-[150px]">
                                         <div class="grid grid-cols-12 font-bold">
                                             <div class="col-span-2">III.</div>
                                             <div class="col-span-4">Tiba kembali di</div>
@@ -502,10 +531,10 @@
                                         <p class="text-[11pt] text-justify leading-tight mt-1">
                                             Telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang sesingkat-singkatnya.
                                         </p>
-                                        <div class="text-center font-semibold pt-2">
+                                        <div class="text-center font-semibold pt-1">
                                             Kepala MI Tarbiyatul Ulum
                                         </div>
-                                        <div class="h-6"></div>
+                                        <div class="h-4"></div>
                                         <div class="text-center font-semibold underline">
                                             <span class="outNamaKepsCopy">Sururiyah, S.Pd.I</span>
                                         </div>
@@ -662,6 +691,7 @@ function doPost(e) {
             document.getElementById('badgeCount').innerText = cloudDatabase.length;
             renderFormPegawai();
             toggleJenisSurat();
+            updatePageLayout();
             syncDataFromCloud();
         };
 
@@ -693,6 +723,27 @@ function doPost(e) {
             setTimeout(() => {
                 toast.classList.add('translate-y-20', 'opacity-0');
             }, 3500);
+        }
+
+        function updatePageLayout() {
+            const ukuran = document.getElementById('ukuranKertas').value;
+            const root = document.documentElement;
+
+            if (ukuran === 'f4') {
+                root.style.setProperty('--paper-width', '215mm');
+                root.style.setProperty('--paper-height', '330mm');
+                root.style.setProperty('--paper-size-print', '215mm 330mm');
+            } else {
+                root.style.setProperty('--paper-width', '210mm');
+                root.style.setProperty('--paper-height', '297mm');
+                root.style.setProperty('--paper-size-print', 'A4');
+            }
+
+            // Margin Kiri 1cm, Kanan 1.5cm
+            root.style.setProperty('--margin-left', '1cm');
+            root.style.setProperty('--margin-right', '1.5cm');
+            root.style.setProperty('--margin-top', '1.5cm');
+            root.style.setProperty('--margin-bottom', '1.5cm');
         }
 
         function renderFormPegawai() {
