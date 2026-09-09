@@ -30,7 +30,7 @@
             }
             @page { 
                 size: A4; 
-                margin: 0.5cm 1cm; 
+                margin: 2cm 2cm 2cm 2.5cm; 
             }
         }
     </style>
@@ -204,15 +204,15 @@
             </div>
 
             <div class="lg:col-span-7 bg-white rounded-xl shadow-md p-6 overflow-x-auto flex justify-center">
-                <div id="printable-area" class="w-[210mm] bg-white px-[10mm] py-[4mm] text-slate-900 font-serif-custom shadow border relative text-[11.5px] leading-snug flex flex-col justify-between">
+                <div id="printable-area" class="w-[210mm] bg-white px-[2.5cm] py-[2cm] text-slate-900 font-serif-custom shadow border relative text-[12pt] leading-snug flex flex-col justify-between" style="padding-left: 2.5cm; padding-right: 2cm; padding-top: 2cm; padding-bottom: 2cm;">
                     
                     <!-- HALAMAN 1 / SURAT TUGAS ATAU SPPD HALAMAN 1 -->
-                    <div class="min-h-[268mm] flex flex-col justify-between">
+                    <div class="min-h-[257mm] flex flex-col justify-between">
                         <div>
                             <!-- KOP SURAT -->
                             <div class="border-b-4 border-double border-emerald-900 pb-2 mb-2 flex items-center justify-between">
-                                <div class="w-16 h-16 flex items-center justify-center bg-white p-0.5 flex-shrink-0">
-                                    <img src="https://i.postimg.cc/ydcZFgqV/LOGO-MAARIF-NU.png" alt="Logo Ma'arif" class="w-full h-full object-contain" crossorigin="anonymous" onerror="this.src='https://placehold.co/80x80/064e3b/ffffff?text=NU';">
+                                <div class="w-20 h-20 flex items-center justify-center bg-white p-0.5 flex-shrink-0">
+                                    <img src="https://i.postimg.cc/ydcZFgqV/LOGO-MAARIF-NU.png" alt="Logo Ma'arif" class="w-full h-full object-contain" crossorigin="anonymous" onerror="this.src='https://placehold.co/90x90/064e3b/ffffff?text=NU';">
                                 </div>
                                 <div class="text-center flex-1 px-2">
                                     <h2 class="font-bold text-[13px] tracking-wide uppercase leading-tight">LEMBAGA PENDIDIKAN MA'ARIF NU KEBUMEN</h2>
@@ -225,10 +225,10 @@
                             <div class="border-b-2 border-emerald-700 mb-2"></div>
 
                             <!-- KONTEN SURAT TUGAS -->
-                            <div id="layoutSuratTugas" class="hidden">
+                            <div id="layoutSuratTugas" class="hidden text-[12pt]">
                                 <div class="text-center mb-3">
                                     <h3 class="font-bold underline uppercase text-base">SURAT PERINTAH TUGAS</h3>
-                                    <p class="text-sm">Nomor : <span class="outNoSuratCopy">091/MI.058/SPPD/7/2026</span></p>
+                                    <p class="text-[12pt]">Nomor : <span class="outNoSuratCopy">091/MI.058/SPPD/7/2026</span></p>
                                 </div>
 
                                 <div class="mb-2 text-justify">
@@ -236,7 +236,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <table class="w-full text-left align-top">
+                                    <table class="w-full text-left align-top text-[12pt]">
                                         <tbody id="outDaftarPegawaiTugas">
                                             <!-- Render via JS -->
                                         </tbody>
@@ -244,7 +244,7 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <table class="w-full text-left align-top">
+                                    <table class="w-full text-left align-top text-[12pt]">
                                         <tr>
                                             <td class="w-16 font-bold align-top">Untuk</td>
                                             <td class="w-4 text-center align-top">:</td>
@@ -274,106 +274,106 @@
                             </div>
 
                             <!-- KONTEN SPPD HALAMAN 1 -->
-                            <div id="layoutSPPD1">
+                            <div id="layoutSPPD1" class="text-[12pt]">
                                 <div class="text-center mb-1">
                                     <h3 class="font-bold underline uppercase text-sm">SURAT PERINTAH PERJALANAN DINAS (SPPD)</h3>
-                                    <p class="text-xs">Nomor : <span class="outNoSuratCopy">091/MI.058/SPPD/7/2026</span></p>
+                                    <p class="text-[12pt]">Nomor : <span class="outNoSuratCopy">091/MI.058/SPPD/7/2026</span></p>
                                 </div>
                                 
-                                <table class="w-full border-collapse border border-slate-800 text-[10.5px] mb-1">
+                                <table class="w-full border-collapse border border-slate-800 text-[12pt] mb-1">
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 w-6 text-center font-bold align-top">1.</td>
-                                        <td class="border border-slate-800 p-0.5 w-[32%] align-top">Pejabat yang memberi perintah</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">Kepala MI Tarbiyatul Ulum Tirtomoyo Poncowarno</td>
+                                        <td class="border border-slate-800 p-1 w-6 text-center font-bold align-top">1.</td>
+                                        <td class="border border-slate-800 p-1 w-[32%] align-top">Pejabat yang memberi perintah</td>
+                                        <td class="border border-slate-800 p-1 align-top">Kepala MI Tarbiyatul Ulum Tirtomoyo Poncowarno</td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">2.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">Nama pegawai yang diperintahkan</td>
-                                        <td class="border border-slate-800 p-0.5 align-top font-semibold" id="outSppdPegawai">Dewi Sangadati Rohmah, S.Pd.</td>
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">2.</td>
+                                        <td class="border border-slate-800 p-1 align-top">Nama pegawai yang diperintahkan</td>
+                                        <td class="border border-slate-800 p-1 align-top font-semibold" id="outSppdPegawai">Dewi Sangadati Rohmah, S.Pd.</td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">3.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">3.</td>
+                                        <td class="border border-slate-800 p-1 align-top">
                                             a. Pangkat dan golongan<br>
                                             b. Jabatan<br>
                                             c. Tingkat Menurut Perjalanan
                                         </td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 align-top">
                                             a. <span id="outPangkat">-</span><br>
                                             b. <span id="outJabatanPegawai">Guru</span><br>
                                             c. -
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">4.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">Maksud perjalanan dinas</td>
-                                        <td class="border border-slate-800 p-0.5 align-top" id="outSppdMaksud">Menjadi peserta Penguatan Implementasi KMA 1503 Tahun 2025 dan Innersi Pendidikan Perkoperasian</td>
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">4.</td>
+                                        <td class="border border-slate-800 p-1 align-top">Maksud perjalanan dinas</td>
+                                        <td class="border border-slate-800 p-1 align-top" id="outSppdMaksud">Menjadi peserta Penguatan Implementasi KMA 1503 Tahun 2025 dan Innersi Pendidikan Perkoperasian</td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">5.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">Alat Angkut yang dipergunakan</td>
-                                        <td class="border border-slate-800 p-0.5 align-top" id="outKendaraan">Roda dua</td>
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">5.</td>
+                                        <td class="border border-slate-800 p-1 align-top">Alat Angkut yang dipergunakan</td>
+                                        <td class="border border-slate-800 p-1 align-top" id="outKendaraan">Roda dua</td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">6.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">6.</td>
+                                        <td class="border border-slate-800 p-1 align-top">
                                             a. Tempat berangkat<br>
                                             b. Tempat tujuan
                                         </td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 align-top">
                                             a. <span id="outTempatBerangkat">MI Tarbiyatul Ulum</span><br>
                                             b. <span id="outTempatTujuan">Hotel Grand Kolopaking Kebumen</span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">7.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">7.</td>
+                                        <td class="border border-slate-800 p-1 align-top">
                                             a. Lamanya perjalanan dinas<br>
                                             b. Tanggal berangkat<br>
                                             c. Tanggal harus kembali
                                         </td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 align-top">
                                             a. <span id="outLama">1 (satu) hari</span><br>
                                             b. <span id="outTglBerangkat">7 Juli 2026</span><br>
                                             c. <span id="outTglKembali">7 Juli 2026</span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">8.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">Pengikut</td>
-                                        <td class="border border-slate-800 p-0.5 align-top" id="outPengikutContainer">
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">8.</td>
+                                        <td class="border border-slate-800 p-1 align-top">Pengikut</td>
+                                        <td class="border border-slate-800 p-1 align-top" id="outPengikutContainer">
                                             <!-- Render via JS -->
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">9.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">9.</td>
+                                        <td class="border border-slate-800 p-1 align-top">
                                             Pembebanan anggaran<br>
                                             a. Instansi<br>
                                             b. Mata anggaran
                                         </td>
-                                        <td class="border border-slate-800 p-0.5 align-top">
+                                        <td class="border border-slate-800 p-1 align-top">
                                             <br>
                                             a. <span id="outInstansiAnggaran">MI Tarbiyatul Ulum</span><br>
                                             b. <span id="outMataAnggaran">Dana BOS</span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-slate-800 p-0.5 text-center font-bold align-top">10.</td>
-                                        <td class="border border-slate-800 p-0.5 align-top">Keterangan lain-lain</td>
-                                        <td class="border border-slate-800 p-0.5 align-top"></td>
+                                        <td class="border border-slate-800 p-1 text-center font-bold align-top">10.</td>
+                                        <td class="border border-slate-800 p-1 align-top">Keterangan lain-lain</td>
+                                        <td class="border border-slate-800 p-1 align-top"></td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
 
-                        <!-- Tanda Tangan Halaman 1 (Didekatkan ke tabel, jarak ditambah untuk cap & tandatangan) -->
+                        <!-- Tanda Tangan Halaman 1 -->
                         <div class="pt-1 pb-1">
                             <div class="flex justify-end">
-                                <div class="text-left w-52 text-[11px]">
+                                <div class="text-left w-60 text-[12pt]">
                                     <p>Dikeluarkan di : Tirtomoyo</p>
                                     <p class="mb-0.5">Pada Tanggal : <span id="outTglDitetapkan">30 Juli 2026</span></p>
-                                    <p class="font-bold uppercase mb-10">KEPALA MADRASAH</p>
+                                    <p class="font-bold uppercase mb-12">KEPALA MADRASAH</p>
                                     <p class="font-bold underline" id="outNamaKeps">Sururiyah, S.Pd.I</p>
                                     <p>NIP. <span id="outNipKeps">198304262005012012</span></p>
                                 </div>
@@ -382,14 +382,14 @@
                     </div>
 
                     <!-- SPPD HALAMAN 2 -->
-                    <div id="layoutSPPD2" class="page-break min-h-[268mm] flex flex-col justify-between pt-1 border-t-2 border-dashed border-slate-300">
-                        <div class="space-y-1">
+                    <div id="layoutSPPD2" class="page-break min-h-[257mm] flex flex-col justify-between pt-1 border-t-2 border-dashed border-slate-300">
+                        <div class="space-y-1 text-[12pt]">
                             <!-- BAGIAN ATAS HALAMAN 2 -->
-                            <div class="grid grid-cols-2 text-[10px] border border-slate-800">
-                                <div class="p-1 border-r border-slate-800 space-y-6">
+                            <div class="grid grid-cols-2 text-[12pt] border border-slate-800">
+                                <div class="p-1.5 border-r border-slate-800 space-y-6">
                                     <p>&nbsp;</p>
                                 </div>
-                                <div class="p-1 space-y-0.5">
+                                <div class="p-1.5 space-y-1">
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-5">SPPD No.</div>
                                         <div class="col-span-1">:</div>
@@ -415,10 +415,10 @@
                                         <div class="col-span-1">:</div>
                                         <div class="col-span-6"><span class="outTempatTujuanCopy">Hotel Grand Kolopaking Kebumen</span></div>
                                     </div>
-                                    <div class="text-center pt-0.5 font-semibold">
+                                    <div class="text-center pt-1 font-semibold">
                                         Selaku Pelaksana Teknis Kegiatan
                                     </div>
-                                    <div class="h-6"></div>
+                                    <div class="h-16"></div>
                                     <div class="text-center font-semibold underline">
                                         <span id="outSppdPegawaiCopy">Dewi Sangadati Rohmah, S.Pd.</span>
                                     </div>
@@ -429,10 +429,10 @@
                             </div>
 
                             <!-- BAGIAN II & III -->
-                            <div class="grid grid-cols-2 text-[10px] border border-slate-800">
+                            <div class="grid grid-cols-2 text-[12pt] border border-slate-800">
                                 <!-- Kolom Kiri -->
                                 <div class="border-r border-slate-800 flex flex-col justify-between">
-                                    <div class="p-1 space-y-1 border-b border-slate-800 min-h-[110px]">
+                                    <div class="p-1.5 space-y-1 border-b border-slate-800 min-h-[120px]">
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-2 font-bold">II.</div>
                                             <div class="col-span-3">Tiba di</div>
@@ -445,20 +445,20 @@
                                             <div class="col-span-1">:</div>
                                             <div class="col-span-6"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                         </div>
-                                        <div class="text-center font-semibold pt-0.5">
+                                        <div class="text-center font-semibold pt-1">
                                             Panitia / Pejabat Tujuan
                                         </div>
-                                        <div class="h-6"></div>
+                                        <div class="h-8"></div>
                                         <div class="text-center text-slate-400">
                                             ...................................................
                                         </div>
                                     </div>
-                                    <div class="p-1 min-h-[90px]"></div>
+                                    <div class="p-1.5 min-h-[100px]"></div>
                                 </div>
 
                                 <!-- Kolom Kanan -->
                                 <div class="flex flex-col justify-between">
-                                    <div class="p-1 space-y-1 border-b border-slate-800 min-h-[110px]">
+                                    <div class="p-1.5 space-y-1 border-b border-slate-800 min-h-[140px]">
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-5">Berangkat dari</div>
                                             <div class="col-span-1">:</div>
@@ -474,10 +474,10 @@
                                             <div class="col-span-1">:</div>
                                             <div class="col-span-6"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                         </div>
-                                        <div class="text-center font-semibold">
+                                        <div class="text-center font-semibold pt-2">
                                             Kepala MI Tarbiyatul Ulum
                                         </div>
-                                        <div class="h-4"></div>
+                                        <div class="h-6"></div>
                                         <div class="text-center font-semibold underline">
                                             <span class="outNamaKepsCopy">Sururiyah, S.Pd.I</span>
                                         </div>
@@ -486,7 +486,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="p-1 space-y-1 min-h-[90px]">
+                                    <div class="p-1.5 space-y-1 min-h-[160px]">
                                         <div class="grid grid-cols-12 font-bold">
                                             <div class="col-span-2">III.</div>
                                             <div class="col-span-4">Tiba kembali di</div>
@@ -499,13 +499,13 @@
                                             <div class="col-span-1">:</div>
                                             <div class="col-span-5"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                         </div>
-                                        <p class="text-[9px] text-justify leading-tight">
+                                        <p class="text-[11pt] text-justify leading-tight mt-1">
                                             Telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang sesingkat-singkatnya.
                                         </p>
-                                        <div class="text-center font-semibold pt-0.5">
+                                        <div class="text-center font-semibold pt-2">
                                             Kepala MI Tarbiyatul Ulum
                                         </div>
-                                        <div class="h-4"></div>
+                                        <div class="h-6"></div>
                                         <div class="text-center font-semibold underline">
                                             <span class="outNamaKepsCopy">Sururiyah, S.Pd.I</span>
                                         </div>
@@ -517,12 +517,12 @@
                             </div>
 
                             <!-- BAGIAN IV CATATAN LAIN -->
-                            <div class="text-[10px] border border-slate-800 p-1 min-h-[30px]">
+                            <div class="text-[12pt] border border-slate-800 border-t-0 p-1.5 min-h-[35px]">
                                 <span class="font-bold">IV. Catatan lain :</span>
                             </div>
                         </div>
 
-                        <div class="text-center text-[9.5px] text-slate-500 pt-0.5">
+                        <div class="text-center text-[10pt] text-slate-500 pt-1">
                             --- Halaman 2 SPPD ---
                         </div>
                     </div>
@@ -1105,7 +1105,7 @@ function doPost(e) {
 
         const suratForm = document.getElementById('suratForm');
         if (suratForm) {
-            suratForm.addEventListener('input', renderOutput);
+            suratForm.appendEventListener ? suratForm.addEventListener('input', renderOutput) : suratForm.oninput = renderOutput;
         }
     </script>
 </body>
