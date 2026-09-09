@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Surat Tugas & SPPD Terhubung Google Sheets - MI Tarbiyatul 'Ulum</title>
+    <title>Generator Surat Tugas & SPPD MI Tarbiyatul 'Ulum</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Times+New+Roman&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -114,30 +114,30 @@
 
                     <!-- Keperluan / Agenda Tugas -->
                     <div class="border-t pt-3">
-                        <h3 class="font-bold text-emerald-800 mb-2">Detail Keperluan / Acara</h3>
+                        <h3 class="font-bold text-emerald-800 mb-2">Detail Keperluan & Pelaksanaan Tugas</h3>
                         <div class="space-y-2">
                             <div>
-                                <label class="block text-slate-600 text-xs mb-1">Maksud / Keperluan Tugas</label>
-                                <textarea id="keperluan" rows="2" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">Menjadi peserta Seminar How To Be Great Teacher</textarea>
+                                <label class="block text-slate-600 text-xs mb-1">Maksud / Kalimat Keperluan (Baris "Untuk")</label>
+                                <textarea id="keperluan" rows="3" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">Menjadi peserta Penguatan Implementasi KMA 1503 Tahun 2025 dan Innersi Pendidikan Perkoperasian pada:</textarea>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="block text-slate-600 text-xs mb-1">Hari</label>
-                                    <input type="text" id="hari" value="Jum'at" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <input type="text" id="hari" value="Selasa" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
                                 </div>
                                 <div>
                                     <label class="block text-slate-600 text-xs mb-1">Tanggal Kegiatan</label>
-                                    <input type="date" id="tglKegiatan" value="2026-07-31" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <input type="date" id="tglKegiatan" value="2026-07-07" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="block text-slate-600 text-xs mb-1">Tempat</label>
-                                    <input type="text" id="tempat" value="Aula Setda Kebumen" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <input type="text" id="tempat" value="Hotel Grand Kolopaking Kebumen" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
                                 </div>
                                 <div>
                                     <label class="block text-slate-600 text-xs mb-1">Waktu</label>
-                                    <input type="text" id="waktu" value="Pukul 12.30 - selesai" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <input type="text" id="waktu" value="Pukul 08.00 - selesai" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
                             </div>
                             <div>
                                 <label class="block text-slate-600 text-xs mb-1">Tempat Tujuan</label>
-                                <input type="text" id="tempatTujuan" value="Aula Setda Kebumen" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                <input type="text" id="tempatTujuan" value="Hotel Grand Kolopaking Kebumen" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
@@ -234,23 +234,23 @@
                                             <td class="w-16 font-bold align-top">Untuk</td>
                                             <td class="w-4 text-center align-top">:</td>
                                             <td class="align-top">
-                                                <span id="outKeperluanTugas">Menjadi peserta Seminar How To Be Great Teacher pada:</span>
+                                                <span id="outKeperluanTugas">Menjadi peserta Penguatan Implementasi KMA 1503 Tahun 2025 dan Innersi Pendidikan Perkoperasian pada:</span>
                                                 <div class="mt-1 grid grid-cols-12 gap-1">
                                                     <div class="col-span-3">Hari</div>
                                                     <div class="col-span-1">:</div>
-                                                    <div class="col-span-8" id="outHari">Jum'at</div>
+                                                    <div class="col-span-8" id="outHari">Selasa</div>
 
                                                     <div class="col-span-3">Tanggal</div>
                                                     <div class="col-span-1">:</div>
-                                                    <div class="col-span-8" id="outTglKegiatan">31 Juli 2026</div>
+                                                    <div class="col-span-8" id="outTglKegiatan">7 Juli 2026</div>
 
                                                     <div class="col-span-3">Tempat</div>
                                                     <div class="col-span-1">:</div>
-                                                    <div class="col-span-8" id="outTempat">Aula Setda Kebumen</div>
+                                                    <div class="col-span-8" id="outTempat">Hotel Grand Kolopaking Kebumen</div>
 
                                                     <div class="col-span-3">Waktu</div>
                                                     <div class="col-span-1">:</div>
-                                                    <div class="col-span-8" id="outWaktu">Pukul 12.30 - selesai</div>
+                                                    <div class="col-span-8" id="outWaktu">Pukul 08.00 - selesai</div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -292,7 +292,7 @@
                                     <tr>
                                         <td class="border border-slate-800 p-1.5 text-center font-bold align-top">4.</td>
                                         <td class="border border-slate-800 p-1.5 align-top">Maksud perjalanan dinas</td>
-                                        <td class="border border-slate-800 p-1.5 align-top" id="outSppdMaksud">Menjadi peserta Seminar How To Be Great Teacher</td>
+                                        <td class="border border-slate-800 p-1.5 align-top" id="outSppdMaksud">Menjadi peserta Penguatan Implementasi KMA 1503 Tahun 2025 dan Innersi Pendidikan Perkoperasian</td>
                                     </tr>
                                     <tr>
                                         <td class="border border-slate-800 p-1.5 text-center font-bold align-top">5.</td>
@@ -307,7 +307,7 @@
                                         </td>
                                         <td class="border border-slate-800 p-1.5 align-top">
                                             a. <span id="outTempatBerangkat">MI Tarbiyatul Ulum</span><br>
-                                            b. <span id="outTempatTujuan">Aula Setda Kebumen</span>
+                                            b. <span id="outTempatTujuan">Hotel Grand Kolopaking Kebumen</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -319,8 +319,8 @@
                                         </td>
                                         <td class="border border-slate-800 p-1.5 align-top">
                                             a. <span id="outLama">1 (satu) hari</span><br>
-                                            b. <span id="outTglBerangkat">31 Juli 2026</span><br>
-                                            c. <span id="outTglKembali">31 Juli 2026</span>
+                                            b. <span id="outTglBerangkat">7 Juli 2026</span><br>
+                                            c. <span id="outTglKembali">7 Juli 2026</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -366,6 +366,7 @@
                         </div>
                     </div>
 
+                    <!-- SPPD HALAMAN 2 -->
                     <div id="layoutSPPD2" class="page-break min-h-[277mm] flex flex-col justify-between pt-4 border-t-2 border-dashed border-slate-300">
                         <div class="space-y-3">
                             <!-- BAGIAN ATAS HALAMAN 2 -->
@@ -392,12 +393,12 @@
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-5">Pada tanggal</div>
                                         <div class="col-span-1">:</div>
-                                        <div class="col-span-6"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                        <div class="col-span-6"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                     </div>
                                     <div class="grid grid-cols-12">
                                         <div class="col-span-5">Ke</div>
                                         <div class="col-span-1">:</div>
-                                        <div class="col-span-6"><span class="outTempatTujuanCopy">Aula Setda Kebumen</span></div>
+                                        <div class="col-span-6"><span class="outTempatTujuanCopy">Hotel Grand Kolopaking Kebumen</span></div>
                                     </div>
                                     <div class="text-center pt-2 font-semibold">
                                         Selaku Pelaksana Teknis Kegiatan
@@ -421,13 +422,13 @@
                                             <div class="col-span-2 font-bold">II.</div>
                                             <div class="col-span-3">Tiba di</div>
                                             <div class="col-span-1">:</div>
-                                            <div class="col-span-6"><span class="outTempatTujuanCopy">Aula Setda Kebumen</span></div>
+                                            <div class="col-span-6"><span class="outTempatTujuanCopy">Hotel Grand Kolopaking Kebumen</span></div>
                                         </div>
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-2"></div>
                                             <div class="col-span-3">Pada tanggal</div>
                                             <div class="col-span-1">:</div>
-                                            <div class="col-span-6"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                            <div class="col-span-6"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                         </div>
                                         <div class="text-center font-semibold pt-2">
                                             Panitia / Pejabat Tujuan
@@ -446,7 +447,7 @@
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-5">Berangkat dari</div>
                                             <div class="col-span-1">:</div>
-                                            <div class="col-span-6"><span class="outTempatTujuanCopy">Aula Setda Kebumen</span></div>
+                                            <div class="col-span-6"><span class="outTempatTujuanCopy">Hotel Grand Kolopaking Kebumen</span></div>
                                         </div>
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-5">Ke</div>
@@ -456,7 +457,7 @@
                                         <div class="grid grid-cols-12">
                                             <div class="col-span-5">Pada tanggal</div>
                                             <div class="col-span-1">:</div>
-                                            <div class="col-span-6"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                            <div class="col-span-6"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                         </div>
                                         <div class="text-center font-semibold">
                                             Kepala MI Tarbiyatul Ulum
@@ -481,7 +482,7 @@
                                             <div class="col-span-2"></div>
                                             <div class="col-span-4">Pada tanggal</div>
                                             <div class="col-span-1">:</div>
-                                            <div class="col-span-5"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                            <div class="col-span-5"><span class="outTglBerangkatCopy">7 Juli 2026</span></div>
                                         </div>
                                         <p class="text-[11px] text-justify leading-tight">
                                             Telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang sesingkat-singkatnya.
@@ -567,7 +568,7 @@
                 <button onclick="tutupModalScript()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
             </div>
             <p class="text-xs text-slate-600">
-                Agar web app ini dapat mencatat data riwayat ke Google Spreadsheet Anda secara otomatis, buka Google Sheet Anda, pilih menu <b>Extensions > Apps Script</b>, lalu paste kode di bawah ini, dan deploy sebagai Web App (Who has access: <i>Anyone</i>).
+                Aplikasi ini telah terhubung otomatis dengan Web App Google Apps Script Anda. Anda juga dapat melihat kode Apps Script di bawah ini jika diperlukan untuk dipasang pada Google Spreadsheet Anda.
             </p>
             <div class="relative">
                 <pre class="bg-slate-900 text-emerald-400 text-xs p-4 rounded-xl overflow-x-auto font-mono max-h-60" id="scriptCodeBox">
@@ -611,7 +612,7 @@ function doPost(e) {
             <div>
                 <label class="block font-semibold text-xs text-slate-700 mb-1">URL Web App / Google Apps Script Deployment Anda</label>
                 <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full border rounded-lg p-2.5 text-xs bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
-                <p class="text-[11px] text-slate-500 mt-1">Masukkan URL Web App hasil deploy Apps Script Anda di sini untuk menghubungkan penyimpanan cloud.</p>
+                <p class="text-[11px] text-slate-500 mt-1">URL Web App Anda sudah tertanam otomatis di sistem.</p>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="tutupModalScript()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-4 py-2 rounded-lg font-semibold">Tutup</button>
@@ -630,6 +631,7 @@ function doPost(e) {
 
     <script>
         const sheetTSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_Sna04_ALPdSrfiAzykb5Kv5l5CjSbK6ZdlEQ19GnUD__6H7HH1CRGJhjchNMqM0-Pj9rTljxHkGj/pub?output=tsv";
+        const embeddedGasUrl = "https://script.google.com/macros/s/AKfycbxM0Vw_RRpzw3IKfFlFr9K9-C7s-dRy6T7abzvebvXzfLasUwoWQDTa1dT9fiIfJ5pg/exec";
         
         let daftarPegawai = [
             { nama: "Dewi Sangadati Rohmah, S.Pd.", jabatan: "Guru", unit: "MI Tarbiyatul Ulum Tirtomoyo" },
@@ -638,7 +640,7 @@ function doPost(e) {
         ];
 
         let cloudDatabase = JSON.parse(localStorage.getItem('mi_cloud_history') || '[]');
-        let userGasUrl = localStorage.getItem('mi_gas_url') || '';
+        let userGasUrl = localStorage.getItem('mi_gas_url') || embeddedGasUrl;
 
         window.onload = function() {
             document.getElementById('gasUrlInput').value = userGasUrl;
@@ -834,7 +836,7 @@ function doPost(e) {
             const tempatBerangkatEl = document.getElementById('tempatBerangkat');
             const tempatTujuanEl = document.getElementById('tempatTujuan');
             const tempatBerangkatVal = tempatBerangkatEl ? tempatBerangkatEl.value : 'MI Tarbiyatul Ulum';
-            const tempatTujuanVal = tempatTujuanEl ? tempatTujuanEl.value : 'Aula Setda Kebumen';
+            const tempatTujuanVal = tempatTujuanEl ? tempatTujuanEl.value : 'Hotel Grand Kolopaking Kebumen';
             const tglFormatted = formatDateID(tglKegiatan);
 
             const outTempatBerangkat = document.getElementById('outTempatBerangkat');
@@ -886,7 +888,6 @@ function doPost(e) {
                 const rows = tsvText.split('\n').map(r => r.split('\t'));
                 
                 cloudDatabase = [];
-                // Skip header row if exists
                 for (let i = 1; i < rows.length; i++) {
                     const r = rows[i];
                     if (r.length >= 4 && r[2]) {
@@ -908,7 +909,6 @@ function doPost(e) {
                     }
                 }
                 
-                // Merge with local storage cache if needed
                 localStorage.setItem('mi_cloud_history', JSON.stringify(cloudDatabase));
                 document.getElementById('badgeCount').innerText = cloudDatabase.length;
                 renderRiwayatTable();
@@ -959,20 +959,15 @@ function doPost(e) {
                 pegawai: JSON.parse(JSON.stringify(daftarPegawai))
             };
 
-            // Simpan lokal dulu
             cloudDatabase.unshift(payload);
             localStorage.setItem('mi_cloud_history', JSON.stringify(cloudDatabase));
             document.getElementById('badgeCount').innerText = cloudDatabase.length;
 
-            if (!userGasUrl) {
-                showToast('Tersimpan Lokal', 'Data disimpan di browser. Masukkan URL Apps Script untuk sync cloud.');
-                bukaModalScript();
-                return;
-            }
+            const activeGasUrl = userGasUrl || embeddedGasUrl;
 
             try {
                 showToast('Menyimpan...', 'Mengirim data ke Google Spreadsheet...');
-                await fetch(userGasUrl, {
+                await fetch(activeGasUrl, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -1068,8 +1063,8 @@ function doPost(e) {
 
         function simpanGasUrl() {
             const url = document.getElementById('gasUrlInput').value.trim();
-            userGasUrl = url;
-            localStorage.setItem('mi_gas_url', url);
+            userGasUrl = url || embeddedGasUrl;
+            localStorage.setItem('mi_gas_url', userGasUrl);
             tutupModalScript();
             showToast('Disimpan', 'URL Web App Apps Script berhasil disimpan.');
         }
