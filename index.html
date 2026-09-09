@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Surat Tugas & SPPD Terhubung Google Sheets - MI Tarbiyatul 'Ulum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Times+New+Roman&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif-custom { font-family: 'Times New Roman', Times, serif; }
+        @media print {
+            body * { visibility: hidden; }
+            #printable-area, #printable-area * { visibility: visible; }
+            #printable-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; box-shadow: none !important; }
+            .no-print { display: none !important; }
+            .page-break { page-break-before: always; break-before: page; }
+            @page { size: A4; margin: 1cm 1.5cm; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-emerald-900 text-white shadow-md no-print py-4 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3 mb-2 md:mb-0">
+                <div class="bg-white p-2 rounded-lg text-emerald-900 font-bold text-xl shadow">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">Generator Surat Tugas & SPPD Cloud Sheet</h1>
+                    <p class="text-xs text-emerald-200">MI Tarbiyatul 'Ulum Tirtomoyo, Poncowarno, Kebumen</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 flex-wrap gap-y-2">
+                <button onclick="switchTab('generator')" id="btnTabGenerator" class="bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 shadow">
+                    <i class="fa-solid fa-pen-to-square"></i><span>Form Generator</span>
+                </button>
+                <button onclick="switchTab('riwayat')" id="btnTabRiwayat" class="bg-emerald-800 hover:bg-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 shadow border border-emerald-600">
+                    <i class="fa-solid fa-clock-rotate-left"></i><span>Riwayat Sheet (<span id="badgeCount">0</span>)</span>
+                </button>
+                <button onclick="bukaModalScript()" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-1 shadow text-white" title="Panduan & Kode Apps Script">
+                    <i class="fa-solid fa-code"></i><span class="hidden sm:inline">Apps Script</span>
+                </button>
+                <button onclick="syncDataFromCloud()" class="bg-indigo-600 hover:bg-indigo-700 px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-1 shadow text-white" title="Sinkronisasi dari Google Sheet">
+                    <i class="fa-solid fa-rotate" id="syncIcon"></i><span class="hidden sm:inline">Sinkron</span>
+                </button>
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 shadow">
+                    <i class="fa-solid fa-print"></i><span>Cetak / PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto flex-1 w-full p-4 md:p-6">
+        
+        <div id="viewGenerator" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- SIDEBAR INPUT FORM -->
+            <div class="lg:col-span-5 bg-white rounded-xl shadow-md p-5 no-print overflow-y-auto max-h-[85vh]">
+                <div class="border-b pb-3 mb-4 flex justify-between items-center">
+                    <h2 class="font-bold text-lg text-slate-700"><i class="fa-solid fa-pen-to-square text-emerald-700 mr-2"></i>Form Data Surat</h2>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-medium">Auto-Live Update</span>
+                </div>
+
+                <form id="suratForm" class="space-y-4 text-sm">
+                    <!-- Jenis Surat -->
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Pilih Jenis Dokumen</label>
+                        <select id="jenisSurat" onchange="toggleJenisSurat()" class="w-full border rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="tugas">Surat Perintah Tugas (SPT)</option>
+                            <option value="sppd" selected>SPPD Lengkap (2 Halaman)</option>
+                        </select>
+                    </div>
+
+                    <!-- Nomor & Tanggal Surat -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Nomor Surat</label>
+                            <input type="text" id="noSurat" value="091/MI.058/SPPD/7/2026" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Tanggal Ditetapkan</label>
+                            <input type="date" id="tglDitetapkan" value="2026-07-30" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Kepala Madrasah -->
+                    <div class="border-t pt-3">
+                        <h3 class="font-bold text-emerald-800 mb-2">Pejabat Pemberi Tugas</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Nama Kepala Madrasah</label>
+                                <input type="text" id="namaKeps" value="Sururiyah, S.Pd.I" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">NIP Kepala Madrasah</label>
+                                <input type="text" id="nipKeps" value="198304262005012012" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pegawai / Guru yang Ditugaskan -->
+                    <div class="border-t pt-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-emerald-800">Daftar Guru / Pegawai Ditugaskan</h3>
+                            <button type="button" onclick="tambahPegawai()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2 py-1 rounded font-medium transition"><i class="fa-solid fa-plus mr-1"></i>Tambah</button>
+                        </div>
+                        <div id="containerPegawai" class="space-y-3">
+                            <!-- Dynamic rows -->
+                        </div>
+                    </div>
+
+                    <!-- Keperluan / Agenda Tugas -->
+                    <div class="border-t pt-3">
+                        <h3 class="font-bold text-emerald-800 mb-2">Detail Keperluan / Acara</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Maksud / Keperluan Tugas</label>
+                                <textarea id="keperluan" rows="2" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">Menjadi peserta Seminar How To Be Great Teacher</textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-slate-600 text-xs mb-1">Hari</label>
+                                    <input type="text" id="hari" value="Jum'at" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-600 text-xs mb-1">Tanggal Kegiatan</label>
+                                    <input type="date" id="tglKegiatan" value="2026-07-31" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-slate-600 text-xs mb-1">Tempat</label>
+                                    <input type="text" id="tempat" value="Aula Setda Kebumen" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-slate-600 text-xs mb-1">Waktu</label>
+                                    <input type="text" id="waktu" value="Pukul 12.30 - selesai" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Khusus SPPD -->
+                    <div id="sppdSpecificSection" class="border-t pt-3 space-y-2">
+                        <h3 class="font-bold text-emerald-800 mb-2">Atribut SPPD Tambahan</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Pangkat/Gol (Pegawai Utama)</label>
+                                <input type="text" id="pangkatPegawai" value="-" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Kendaraan yang Dipergunakan</label>
+                                <input type="text" id="kendaraan" value="Roda dua" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Tempat Berangkat</label>
+                                <input type="text" id="tempatBerangkat" value="MI Tarbiyatul Ulum" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Tempat Tujuan</label>
+                                <input type="text" id="tempatTujuan" value="Aula Setda Kebumen" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Lamanya Perjalanan</label>
+                                <input type="text" id="lamaPerjalanan" value="1 (satu) hari" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-slate-600 text-xs mb-1">Mata Anggaran</label>
+                                <input type="text" id="mataAnggaran" value="Dana BOS" class="w-full border rounded-lg p-2 bg-slate-50 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Simpan ke Cloud Spreadsheet -->
+                    <div class="pt-2">
+                        <button type="button" onclick="simpanKeGoogleSheet()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 px-4 rounded-lg shadow transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Simpan ke Google Spreadsheet</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="lg:col-span-7 bg-white rounded-xl shadow-md p-6 overflow-x-auto flex justify-center">
+                <div id="printable-area" class="w-[210mm] bg-white p-[12mm] text-slate-900 font-serif-custom shadow border relative text-[13px] leading-relaxed flex flex-col space-y-8">
+                    
+                    <!-- HALAMAN 1 / SURAT TUGAS ATAU SPPD HALAMAN 1 -->
+                    <div class="min-h-[277mm] flex flex-col justify-between">
+                        <div>
+                            <!-- KOP SURAT -->
+                            <div class="border-b-4 border-double border-emerald-900 pb-2 mb-4 flex items-center justify-between">
+                                <div class="w-16 h-16 flex items-center justify-center bg-emerald-800 text-white rounded-full font-bold text-xs text-center p-1 shadow">
+                                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                                </div>
+                                <div class="text-center flex-1 px-2">
+                                    <h2 class="font-bold text-sm tracking-wide uppercase">LEMBAGA PENDIDIKAN MA'ARIF NU KEBUMEN</h2>
+                                    <h1 class="font-bold text-lg tracking-wide uppercase">MADRASAH IBTIDAIYAH TARBIYATUL 'ULUM</h1>
+                                    <p class="text-[11px] italic font-sans">TERAKREDITASI: A NSM : 111233050058 NSS : 112030525006 NPSN : 60710965</p>
+                                    <p class="text-[11px] font-sans">Alamat : Desa Tirtomoyo RT.003/RW.001 Kec. Poncowarno Kab. Kebumen</p>
+                                    <p class="text-[11px] font-sans">Email: mi.tu.tirto@gmail.com Kebumen 54393</p>
+                                </div>
+                            </div>
+                            <div class="border-b-2 border-emerald-700 mb-6"></div>
+
+                            <!-- KONTEN SURAT TUGAS -->
+                            <div id="layoutSuratTugas" class="hidden">
+                                <div class="text-center mb-6">
+                                    <h3 class="font-bold underline uppercase text-base">SURAT PERINTAH TUGAS</h3>
+                                    <p class="text-sm">Nomor : <span class="outNoSuratCopy">091/MI.058/SPPD/7/2026</span></p>
+                                </div>
+
+                                <div class="mb-4 text-justify">
+                                    <p>Yang bertanda tangan di bawah ini kepala Madrasah Ibtidaiyah Tarbiyatul Ulum Tirtomoyo Kecamatan Poncowarno Kabupaten Kebumen menugaskan kepada:</p>
+                                </div>
+
+                                <div class="mb-5">
+                                    <table class="w-full text-left align-top">
+                                        <tbody id="outDaftarPegawaiTugas">
+                                            <!-- Render via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="mb-8">
+                                    <table class="w-full text-left align-top">
+                                        <tr>
+                                            <td class="w-16 font-bold align-top">Untuk</td>
+                                            <td class="w-4 text-center align-top">:</td>
+                                            <td class="align-top">
+                                                <span id="outKeperluanTugas">Menjadi peserta Seminar How To Be Great Teacher pada:</span>
+                                                <div class="mt-1 grid grid-cols-12 gap-1">
+                                                    <div class="col-span-3">Hari</div>
+                                                    <div class="col-span-1">:</div>
+                                                    <div class="col-span-8" id="outHari">Jum'at</div>
+
+                                                    <div class="col-span-3">Tanggal</div>
+                                                    <div class="col-span-1">:</div>
+                                                    <div class="col-span-8" id="outTglKegiatan">31 Juli 2026</div>
+
+                                                    <div class="col-span-3">Tempat</div>
+                                                    <div class="col-span-1">:</div>
+                                                    <div class="col-span-8" id="outTempat">Aula Setda Kebumen</div>
+
+                                                    <div class="col-span-3">Waktu</div>
+                                                    <div class="col-span-1">:</div>
+                                                    <div class="col-span-8" id="outWaktu">Pukul 12.30 - selesai</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- KONTEN SPPD HALAMAN 1 -->
+                            <div id="layoutSPPD1">
+                                <div class="text-center mb-4">
+                                    <h3 class="font-bold underline uppercase text-base">SURAT PERINTAH PERJALANAN DINAS (SPPD)</h3>
+                                    <p class="text-sm">Nomor : <span class="outNoSuratCopy">091/MI.058/SPPD/7/2026</span></p>
+                                </div>
+                                
+                                <table class="w-full border-collapse border border-slate-800 text-xs mb-2">
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 w-6 text-center font-bold align-top">1.</td>
+                                        <td class="border border-slate-800 p-1.5 w-1/3 align-top">Pejabat yang memberi perintah</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">Kepala MI Tarbiyatul Ulum Tirtomoyo Poncowarno</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">2.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">Nama pegawai yang diperintahkan</td>
+                                        <td class="border border-slate-800 p-1.5 align-top font-semibold" id="outSppdPegawai">Dewi Sangadati Rohmah, S.Pd.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">3.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            a. Pangkat dan golongan menurut PP No. 6 Tahun 1997<br>
+                                            b. Jabatan<br>
+                                            c. Tingkat Menurut Perjalanan
+                                        </td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            a. <span id="outPangkat">-</span><br>
+                                            b. <span id="outJabatanPegawai">Guru</span><br>
+                                            c. -
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">4.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">Maksud perjalanan dinas</td>
+                                        <td class="border border-slate-800 p-1.5 align-top" id="outSppdMaksud">Menjadi peserta Seminar How To Be Great Teacher</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">5.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">Alat Angkut yang dipergunakan</td>
+                                        <td class="border border-slate-800 p-1.5 align-top" id="outKendaraan">Roda dua</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">6.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            a. Tempat berangkat<br>
+                                            b. Tempat tujuan
+                                        </td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            a. <span id="outTempatBerangkat">MI Tarbiyatul Ulum</span><br>
+                                            b. <span id="outTempatTujuan">Aula Setda Kebumen</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">7.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            a. Lamanya perjalanan dinas<br>
+                                            b. Tanggal berangkat<br>
+                                            c. Tanggal harus kembali
+                                        </td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            a. <span id="outLama">1 (satu) hari</span><br>
+                                            b. <span id="outTglBerangkat">31 Juli 2026</span><br>
+                                            c. <span id="outTglKembali">31 Juli 2026</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">8.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">Pengikut</td>
+                                        <td class="border border-slate-800 p-1.5 align-top" id="outPengikutContainer">
+                                            <!-- Render via JS -->
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">9.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            Pembebanan anggaran<br>
+                                            a. Instansi<br>
+                                            b. Mata anggaran
+                                        </td>
+                                        <td class="border border-slate-800 p-1.5 align-top">
+                                            <br>
+                                            a. <span id="outInstansiAnggaran">MI Tarbiyatul Ulum</span><br>
+                                            b. <span id="outMataAnggaran">Dana BOS</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-800 p-1.5 text-center font-bold align-top">10.</td>
+                                        <td class="border border-slate-800 p-1.5 align-top">Keterangan lain-lain</td>
+                                        <td class="border border-slate-800 p-1.5 align-top"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Tanda Tangan Halaman 1 -->
+                        <div class="pt-2">
+                            <div class="flex justify-end">
+                                <div class="text-left w-64">
+                                    <p>Dikeluarkan di : Tirtomoyo</p>
+                                    <p class="mb-3">Pada Tanggal : <span id="outTglDitetapkan">30 Juli 2026</span></p>
+                                    <p class="font-bold uppercase mb-12">KEPALA MADRASAH</p>
+                                    <p class="font-bold underline" id="outNamaKeps">Sururiyah, S.Pd.I</p>
+                                    <p>NIP. <span id="outNipKeps">198304262005012012</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="layoutSPPD2" class="page-break min-h-[277mm] flex flex-col justify-between pt-4 border-t-2 border-dashed border-slate-300">
+                        <div class="space-y-3">
+                            <!-- BAGIAN ATAS HALAMAN 2 -->
+                            <div class="grid grid-cols-2 text-xs border border-slate-800">
+                                <div class="p-2 border-r border-slate-800 space-y-12">
+                                    <p>&nbsp;</p>
+                                </div>
+                                <div class="p-2 space-y-2">
+                                    <div class="grid grid-cols-12">
+                                        <div class="col-span-5">SPPD No.</div>
+                                        <div class="col-span-1">:</div>
+                                        <div class="col-span-6 font-semibold"><span class="outNoSuratCopy">091/MI.058/SPPD/7/2026</span></div>
+                                    </div>
+                                    <div class="grid grid-cols-12">
+                                        <div class="col-span-5">Berangkat dari</div>
+                                        <div class="col-span-1">:</div>
+                                        <div class="col-span-6"><span class="outTempatBerangkatCopy">MI Tarbiyatul Ulum</span></div>
+                                    </div>
+                                    <div class="grid grid-cols-12">
+                                        <div class="col-span-5">(tempat kedudukan)</div>
+                                        <div class="col-span-1">:</div>
+                                        <div class="col-span-6">Tirtomoyo, Poncowarno</div>
+                                    </div>
+                                    <div class="grid grid-cols-12">
+                                        <div class="col-span-5">Pada tanggal</div>
+                                        <div class="col-span-1">:</div>
+                                        <div class="col-span-6"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                    </div>
+                                    <div class="grid grid-cols-12">
+                                        <div class="col-span-5">Ke</div>
+                                        <div class="col-span-1">:</div>
+                                        <div class="col-span-6"><span class="outTempatTujuanCopy">Aula Setda Kebumen</span></div>
+                                    </div>
+                                    <div class="text-center pt-2 font-semibold">
+                                        Selaku Pelaksana Teknis Kegiatan
+                                    </div>
+                                    <div class="h-10"></div>
+                                    <div class="text-center font-semibold underline">
+                                        <span id="outSppdPegawaiCopy">Dewi Sangadati Rohmah, S.Pd.</span>
+                                    </div>
+                                    <div class="text-center">
+                                        NIP. <span id="outSppdPegawaiNIP">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BAGIAN II & III -->
+                            <div class="grid grid-cols-2 text-xs border border-slate-800">
+                                <!-- Kolom Kiri -->
+                                <div class="border-r border-slate-800 flex flex-col justify-between">
+                                    <div class="p-2 space-y-4 border-b border-slate-800 min-h-[160px]">
+                                        <div class="grid grid-cols-12">
+                                            <div class="col-span-2 font-bold">II.</div>
+                                            <div class="col-span-3">Tiba di</div>
+                                            <div class="col-span-1">:</div>
+                                            <div class="col-span-6"><span class="outTempatTujuanCopy">Aula Setda Kebumen</span></div>
+                                        </div>
+                                        <div class="grid grid-cols-12">
+                                            <div class="col-span-2"></div>
+                                            <div class="col-span-3">Pada tanggal</div>
+                                            <div class="col-span-1">:</div>
+                                            <div class="col-span-6"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                        </div>
+                                        <div class="text-center font-semibold pt-2">
+                                            Panitia / Pejabat Tujuan
+                                        </div>
+                                        <div class="h-10"></div>
+                                        <div class="text-center text-slate-400">
+                                            ...................................................
+                                        </div>
+                                    </div>
+                                    <div class="p-2 min-h-[140px]"></div>
+                                </div>
+
+                                <!-- Kolom Kanan -->
+                                <div class="flex flex-col justify-between">
+                                    <div class="p-2 space-y-3 border-b border-slate-800 min-h-[160px]">
+                                        <div class="grid grid-cols-12">
+                                            <div class="col-span-5">Berangkat dari</div>
+                                            <div class="col-span-1">:</div>
+                                            <div class="col-span-6"><span class="outTempatTujuanCopy">Aula Setda Kebumen</span></div>
+                                        </div>
+                                        <div class="grid grid-cols-12">
+                                            <div class="col-span-5">Ke</div>
+                                            <div class="col-span-1">:</div>
+                                            <div class="col-span-6"><span class="outTempatBerangkatCopy">MI Tarbiyatul Ulum</span></div>
+                                        </div>
+                                        <div class="grid grid-cols-12">
+                                            <div class="col-span-5">Pada tanggal</div>
+                                            <div class="col-span-1">:</div>
+                                            <div class="col-span-6"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                        </div>
+                                        <div class="text-center font-semibold">
+                                            Kepala MI Tarbiyatul Ulum
+                                        </div>
+                                        <div class="h-6"></div>
+                                        <div class="text-center font-semibold underline">
+                                            <span class="outNamaKepsCopy">Sururiyah, S.Pd.I</span>
+                                        </div>
+                                        <div class="text-center">
+                                            NIP. <span class="outNipKepsCopy">198304262005012012</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-2 space-y-2 min-h-[140px]">
+                                        <div class="grid grid-cols-12 font-bold">
+                                            <div class="col-span-2">III.</div>
+                                            <div class="col-span-4">Tiba kembali di</div>
+                                            <div class="col-span-1">:</div>
+                                            <div class="col-span-5"><span class="outTempatBerangkatCopy">MI Tarbiyatul Ulum</span></div>
+                                        </div>
+                                        <div class="grid grid-cols-12">
+                                            <div class="col-span-2"></div>
+                                            <div class="col-span-4">Pada tanggal</div>
+                                            <div class="col-span-1">:</div>
+                                            <div class="col-span-5"><span class="outTglBerangkatCopy">31 Juli 2026</span></div>
+                                        </div>
+                                        <p class="text-[11px] text-justify leading-tight">
+                                            Telah diperiksa dengan keterangan bahwa perjalanan tersebut di atas benar dilakukan atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang sesingkat-singkatnya.
+                                        </p>
+                                        <div class="text-center font-semibold pt-1">
+                                            Kepala MI Tarbiyatul Ulum
+                                        </div>
+                                        <div class="h-6"></div>
+                                        <div class="text-center font-semibold underline">
+                                            <span class="outNamaKepsCopy">Sururiyah, S.Pd.I</span>
+                                        </div>
+                                        <div class="text-center">
+                                            NIP. <span class="outNipKepsCopy">198304262005012012</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BAGIAN IV CATATAN LAIN -->
+                            <div class="text-xs border border-slate-800 p-2 min-h-[50px]">
+                                <span class="font-bold">IV. Catatan lain :</span>
+                            </div>
+                        </div>
+
+                        <div class="text-center text-[11px] text-slate-500 pt-2">
+                            --- Halaman 2 SPPD ---
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div id="viewRiwayat" class="hidden bg-white rounded-xl shadow-md p-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 pb-4 border-b gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                        <i class="fa-solid fa-table text-emerald-700 mr-3"></i>Google Sheet & Riwayat Cloud
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Menampilkan data riwayat surat yang tersimpan di Google Spreadsheet Anda.</p>
+                </div>
+                <div class="flex items-center space-x-2 flex-wrap gap-y-2">
+                    <button onclick="syncDataFromCloud()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-semibold transition flex items-center shadow">
+                        <i class="fa-solid fa-rotate mr-1.5"></i> Refresh / Sinkronisasi
+                    </button>
+                    <button onclick="exportToCSV()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-3 py-2 rounded-lg font-semibold transition flex items-center shadow">
+                        <i class="fa-solid fa-file-excel mr-1.5"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse border border-slate-200 text-sm">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 text-xs uppercase">
+                            <th class="p-3 border">No</th>
+                            <th class="p-3 border">Waktu Simpan</th>
+                            <th class="p-3 border">Jenis Surat</th>
+                            <th class="p-3 border">Nomor Surat</th>
+                            <th class="p-3 border">Pegawai Utama</th>
+                            <th class="p-3 border">Keperluan / Acara</th>
+                            <th class="p-3 border text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableRiwayatBody">
+                        <!-- Render via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyRiwayat" class="text-center py-12 text-slate-400 hidden">
+                <i class="fa-solid fa-folder-open text-4xl mb-2"></i>
+                <p>Belum ada data surat di Google Sheet atau gagal memuat.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="modalScript" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-code text-blue-600 mr-2"></i>Konfigurasi Google Apps Script</h3>
+                <button onclick="tutupModalScript()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+            </div>
+            <p class="text-xs text-slate-600">
+                Agar web app ini dapat mencatat data riwayat ke Google Spreadsheet Anda secara otomatis, buka Google Sheet Anda, pilih menu <b>Extensions > Apps Script</b>, lalu paste kode di bawah ini, dan deploy sebagai Web App (Who has access: <i>Anyone</i>).
+            </p>
+            <div class="relative">
+                <pre class="bg-slate-900 text-emerald-400 text-xs p-4 rounded-xl overflow-x-auto font-mono max-h-60" id="scriptCodeBox">
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var rows = sheet.getDataRange().getValues();
+  return ContentService.createTextOutput(JSON.stringify(rows))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    sheet.appendRow([
+      data.waktuSimpan || new Date().toLocaleString(),
+      data.jenisSurat || '',
+      data.noSurat || '',
+      data.tglDitetapkan || '',
+      data.namaKeps || '',
+      data.nipKeps || '',
+      data.keperluan || '',
+      data.hari || '',
+      data.tglKegiatan || '',
+      data.tempat || '',
+      data.waktu || '',
+      JSON.stringify(data.pegawai || [])
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({status: "success"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status: "error", message: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+                </pre>
+                <button onclick="salinKodeScript()" class="absolute top-2 right-2 bg-slate-700 hover:bg-slate-600 text-white text-xs px-2 py-1 rounded shadow">
+                    <i class="fa-solid fa-copy mr-1"></i>Salin Kode
+                </button>
+            </div>
+            <div>
+                <label class="block font-semibold text-xs text-slate-700 mb-1">URL Web App / Google Apps Script Deployment Anda</label>
+                <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full border rounded-lg p-2.5 text-xs bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+                <p class="text-[11px] text-slate-500 mt-1">Masukkan URL Web App hasil deploy Apps Script Anda di sini untuk menghubungkan penyimpanan cloud.</p>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="tutupModalScript()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs px-4 py-2 rounded-lg font-semibold">Tutup</button>
+                <button onclick="simpanGasUrl()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-4 py-2 rounded-lg font-semibold shadow">Simpan URL</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastNotification" class="fixed bottom-5 right-5 bg-emerald-800 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-20 opacity-0 z-50">
+        <i class="fa-solid fa-circle-check text-emerald-300 text-lg"></i>
+        <div>
+            <p id="toastTitle" class="font-bold text-xs uppercase">Berhasil</p>
+            <p id="toastMsg" class="text-xs text-emerald-100">Data berhasil diproses.</p>
+        </div>
+    </div>
+
+    <script>
+        const sheetTSVUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_Sna04_ALPdSrfiAzykb5Kv5l5CjSbK6ZdlEQ19GnUD__6H7HH1CRGJhjchNMqM0-Pj9rTljxHkGj/pub?output=tsv";
+        
+        let daftarPegawai = [
+            { nama: "Dewi Sangadati Rohmah, S.Pd.", jabatan: "Guru", unit: "MI Tarbiyatul Ulum Tirtomoyo" },
+            { nama: "Muslihudin, S.Pd.I.", jabatan: "Guru Kelas 5", unit: "MI Tarbiyatul Ulum Tirtomoyo" },
+            { nama: "Yuliatin, S.Pd.I", jabatan: "Guru Kelas 2", unit: "MI Tarbiyatul Ulum Tirtomoyo" }
+        ];
+
+        let cloudDatabase = JSON.parse(localStorage.getItem('mi_cloud_history') || '[]');
+        let userGasUrl = localStorage.getItem('mi_gas_url') || '';
+
+        window.onload = function() {
+            document.getElementById('gasUrlInput').value = userGasUrl;
+            document.getElementById('badgeCount').innerText = cloudDatabase.length;
+            renderFormPegawai();
+            toggleJenisSurat();
+            syncDataFromCloud();
+        };
+
+        function switchTab(tab) {
+            const viewGen = document.getElementById('viewGenerator');
+            const viewRiw = document.getElementById('viewRiwayat');
+            const btnGen = document.getElementById('btnTabGenerator');
+            const btnRiw = document.getElementById('btnTabRiwayat');
+
+            if (tab === 'generator') {
+                viewGen.classList.remove('hidden');
+                viewRiw.classList.add('hidden');
+                btnGen.className = "bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 shadow";
+                btnRiw.className = "bg-emerald-800 hover:bg-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 shadow border border-emerald-600";
+            } else {
+                viewGen.classList.add('hidden');
+                viewRiw.classList.remove('hidden');
+                btnGen.className = "bg-emerald-800 hover:bg-emerald-700 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 shadow border border-emerald-600";
+                btnRiw.className = "bg-emerald-700 hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 shadow";
+                renderRiwayatTable();
+            }
+        }
+
+        function showToast(title, msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        function renderFormPegawai() {
+            const container = document.getElementById('containerPegawai');
+            if (!container) return;
+            container.innerHTML = '';
+            daftarPegawai.forEach((peg, index) => {
+                container.innerHTML += `
+                    <div class="p-3 bg-slate-50 border rounded-lg space-y-2 relative">
+                        <div class="flex justify-between items-center font-semibold text-xs text-emerald-900">
+                            <span>${index === 0 ? 'Pegawai Utama (Nomor 1)' : 'Pengikut #' + index}</span>
+                            ${daftarPegawai.length > 1 ? `<button type="button" onclick="hapusPegawai(${index})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>` : ''}
+                        </div>
+                        <input type="text" placeholder="Nama lengkap & gelar" value="${peg.nama}" oninput="updatePegawai(${index}, 'nama', this.value)" class="w-full border rounded p-1.5 text-xs bg-white">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Jabatan" value="${peg.jabatan}" oninput="updatePegawai(${index}, 'jabatan', this.value)" class="border rounded p-1.5 text-xs bg-white">
+                            <input type="text" placeholder="Unit Kerja" value="${peg.unit}" oninput="updatePegawai(${index}, 'unit', this.value)" class="border rounded p-1.5 text-xs bg-white">
+                        </div>
+                    </div>
+                `;
+            });
+            renderOutput();
+        }
+
+        function tambahPegawai() {
+            daftarPegawai.push({ nama: "", jabatan: "Guru", unit: "MI Tarbiyatul Ulum Tirtomoyo" });
+            renderFormPegawai();
+        }
+
+        function hapusPegawai(index) {
+            daftarPegawai.splice(index, 1);
+            renderFormPegawai();
+        }
+
+        function updatePegawai(index, field, value) {
+            daftarPegawai[index][field] = value;
+            renderOutput();
+        }
+
+        function toggleJenisSurat() {
+            const jenisEl = document.getElementById('jenisSurat');
+            if (!jenisEl) return;
+            const jenis = jenisEl.value;
+            const sppdSection = document.getElementById('sppdSpecificSection');
+            const layoutTugas = document.getElementById('layoutSuratTugas');
+            const layoutSPPD1 = document.getElementById('layoutSPPD1');
+            const layoutSPPD2 = document.getElementById('layoutSPPD2');
+
+            if (jenis === 'sppd') {
+                if (sppdSection) sppdSection.classList.remove('hidden');
+                if (layoutSPPD1) layoutSPPD1.classList.remove('hidden');
+                if (layoutSPPD2) layoutSPPD2.classList.remove('hidden');
+                if (layoutTugas) layoutTugas.classList.add('hidden');
+            } else {
+                if (sppdSection) sppdSection.classList.add('hidden');
+                if (layoutSPPD1) layoutSPPD1.classList.add('hidden');
+                if (layoutSPPD2) layoutSPPD2.classList.add('hidden');
+                if (layoutTugas) layoutTugas.classList.remove('hidden');
+            }
+            renderOutput();
+        }
+
+        function formatDateID(dateString) {
+            if (!dateString) return '';
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return dateString;
+            return `${parseInt(parts[2])} ${months[parseInt(parts[1]) - 1]} ${parts[0]}`;
+        }
+
+        function renderOutput() {
+            const noSuratEl = document.getElementById('noSurat');
+            if (!noSuratEl) return;
+
+            const noSurat = noSuratEl.value;
+            const tglDitetapkan = document.getElementById('tglDitetapkan').value;
+            const namaKeps = document.getElementById('namaKeps').value;
+            const nipKeps = document.getElementById('nipKeps').value;
+            
+            const keperluan = document.getElementById('keperluan').value;
+            const hari = document.getElementById('hari').value;
+            const tglKegiatan = document.getElementById('tglKegiatan').value;
+            const tempat = document.getElementById('tempat').value;
+            const waktu = document.getElementById('waktu').value;
+
+            document.querySelectorAll('.outNoSuratCopy').forEach(el => el.innerText = noSurat);
+            const outTglDitetapkan = document.getElementById('outTglDitetapkan');
+            if (outTglDitetapkan) outTglDitetapkan.innerText = formatDateID(tglDitetapkan);
+            
+            const outNamaKeps = document.getElementById('outNamaKeps');
+            if (outNamaKeps) outNamaKeps.innerText = namaKeps;
+            document.querySelectorAll('.outNamaKepsCopy').forEach(el => el.innerText = namaKeps);
+            
+            const outNipKeps = document.getElementById('outNipKeps');
+            if (outNipKeps) outNipKeps.innerText = nipKeps;
+            document.querySelectorAll('.outNipKepsCopy').forEach(el => el.innerText = nipKeps);
+
+            const outKeperluanTugas = document.getElementById('outKeperluanTugas');
+            if (outKeperluanTugas) outKeperluanTugas.innerText = keperluan;
+            const outHari = document.getElementById('outHari');
+            if (outHari) outHari.innerText = hari;
+            const outTglKegiatan = document.getElementById('outTglKegiatan');
+            if (outTglKegiatan) outTglKegiatan.innerText = formatDateID(tglKegiatan);
+            const outTempat = document.getElementById('outTempat');
+            if (outTempat) outTempat.innerText = tempat;
+            const outWaktu = document.getElementById('outWaktu');
+            if (outWaktu) outWaktu.innerText = waktu;
+
+            const outPegawaiTugas = document.getElementById('outDaftarPegawaiTugas');
+            if (outPegawaiTugas) {
+                outPegawaiTugas.innerHTML = '';
+                daftarPegawai.forEach((peg, index) => {
+                    outPegawaiTugas.innerHTML += `
+                        <tr>
+                            <td class="w-8 font-bold align-top py-1">${index + 1}</td>
+                            <td class="w-28 font-medium align-top py-1">Nama</td>
+                            <td class="w-4 align-top py-1">:</td>
+                            <td class="align-top py-1 font-semibold">${peg.nama}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="font-medium align-top pb-1">Jabatan</td>
+                            <td class="align-top pb-1">:</td>
+                            <td class="align-top pb-1">${peg.jabatan}</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="font-medium align-top pb-3">Unit Kerja</td>
+                            <td class="align-top pb-3">:</td>
+                            <td class="align-top pb-3">${peg.unit}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            if (daftarPegawai.length > 0) {
+                const outSppdPegawai = document.getElementById('outSppdPegawai');
+                if (outSppdPegawai) outSppdPegawai.innerText = daftarPegawai[0].nama;
+                const outSppdPegawaiCopy = document.getElementById('outSppdPegawaiCopy');
+                if (outSppdPegawaiCopy) outSppdPegawaiCopy.innerText = daftarPegawai[0].nama;
+                const outJabatanPegawai = document.getElementById('outJabatanPegawai');
+                if (outJabatanPegawai) outJabatanPegawai.innerText = daftarPegawai[0].jabatan;
+            }
+            
+            const pangkatPegawaiEl = document.getElementById('pangkatPegawai');
+            const outPangkat = document.getElementById('outPangkat');
+            if (outPangkat && pangkatPegawaiEl) outPangkat.innerText = pangkatPegawaiEl.value;
+
+            const outSppdMaksud = document.getElementById('outSppdMaksud');
+            if (outSppdMaksud) outSppdMaksud.innerText = keperluan;
+
+            const kendaraanEl = document.getElementById('kendaraan');
+            const outKendaraan = document.getElementById('outKendaraan');
+            if (outKendaraan && kendaraanEl) outKendaraan.innerText = kendaraanEl.value;
+            
+            const tempatBerangkatEl = document.getElementById('tempatBerangkat');
+            const tempatTujuanEl = document.getElementById('tempatTujuan');
+            const tempatBerangkatVal = tempatBerangkatEl ? tempatBerangkatEl.value : 'MI Tarbiyatul Ulum';
+            const tempatTujuanVal = tempatTujuanEl ? tempatTujuanEl.value : 'Aula Setda Kebumen';
+            const tglFormatted = formatDateID(tglKegiatan);
+
+            const outTempatBerangkat = document.getElementById('outTempatBerangkat');
+            if (outTempatBerangkat) outTempatBerangkat.innerText = tempatBerangkatVal;
+            document.querySelectorAll('.outTempatBerangkatCopy').forEach(el => el.innerText = tempatBerangkatVal);
+            
+            const outTempatTujuan = document.getElementById('outTempatTujuan');
+            if (outTempatTujuan) outTempatTujuan.innerText = tempatTujuanVal;
+            document.querySelectorAll('.outTempatTujuanCopy').forEach(el => el.innerText = tempatTujuanVal);
+
+            const lamaPerjalananEl = document.getElementById('lamaPerjalanan');
+            const outLama = document.getElementById('outLama');
+            if (outLama && lamaPerjalananEl) outLama.innerText = lamaPerjalananEl.value;
+
+            const outTglBerangkat = document.getElementById('outTglBerangkat');
+            if (outTglBerangkat) outTglBerangkat.innerText = tglFormatted;
+            document.querySelectorAll('.outTglBerangkatCopy').forEach(el => el.innerText = tglFormatted);
+
+            const outTglKembali = document.getElementById('outTglKembali');
+            if (outTglKembali) outTglKembali.innerText = tglFormatted;
+            
+            const mataAnggaranEl = document.getElementById('mataAnggaran');
+            const outMataAnggaran = document.getElementById('outMataAnggaran');
+            if (outMataAnggaran && mataAnggaranEl) outMataAnggaran.innerText = mataAnggaranEl.value;
+
+            const pengikutContainer = document.getElementById('outPengikutContainer');
+            if (pengikutContainer) {
+                pengikutContainer.innerHTML = '';
+                if (daftarPegawai.length > 1) {
+                    let htmlPengikut = '';
+                    for (let i = 1; i < daftarPegawai.length; i++) {
+                        htmlPengikut += `${i}. ${daftarPegawai[i].nama}<br>`;
+                    }
+                    pengikutContainer.innerHTML = htmlPengikut;
+                } else {
+                    pengikutContainer.innerHTML = '-';
+                }
+            }
+        }
+
+        // GOOGLE SHEET SYNC & API FUNCTIONS
+        async function syncDataFromCloud() {
+            const icon = document.getElementById('syncIcon');
+            if (icon) icon.classList.add('fa-spin');
+            
+            try {
+                const response = await fetch(sheetTSVUrl);
+                const tsvText = await response.text();
+                const rows = tsvText.split('\n').map(r => r.split('\t'));
+                
+                cloudDatabase = [];
+                // Skip header row if exists
+                for (let i = 1; i < rows.length; i++) {
+                    const r = rows[i];
+                    if (r.length >= 4 && r[2]) {
+                        cloudDatabase.push({
+                            id: 'CLOUD_' + i,
+                            waktuSimpan: r[0] || 'Manual',
+                            jenisSurat: r[1] || 'SPPD',
+                            noSurat: r[2] || '',
+                            tglDitetapkan: r[3] || '',
+                            namaKeps: r[4] || '',
+                            nipKeps: r[5] || '',
+                            keperluan: r[6] || '',
+                            hari: r[7] || '',
+                            tglKegiatan: r[8] || '',
+                            tempat: r[9] || '',
+                            waktu: r[10] || '',
+                            pegawai: tryParseJSON(r[11]) || [{nama: r[4] || 'Pegawai', jabatan: 'Guru', unit: 'MI Tarbiyatul Ulum'}]
+                        });
+                    }
+                }
+                
+                // Merge with local storage cache if needed
+                localStorage.setItem('mi_cloud_history', JSON.stringify(cloudDatabase));
+                document.getElementById('badgeCount').innerText = cloudDatabase.length;
+                renderRiwayatTable();
+                showToast('Sinkronisasi Berhasil', `Memuat ${cloudDatabase.length} data riwayat dari Google Sheet.`);
+            } catch (err) {
+                console.log('Using local cache fallback due to CORS/Network error:', err);
+                cloudDatabase = JSON.parse(localStorage.getItem('mi_cloud_history') || '[]');
+                document.getElementById('badgeCount').innerText = cloudDatabase.length;
+                renderRiwayatTable();
+                showToast('Mode Offline/Cache', 'Gagal terhubung langsung ke TSV pub, memuat riwayat lokal.');
+            } finally {
+                if (icon) icon.classList.remove('fa-spin');
+            }
+        }
+
+        function tryParseJSON(str) {
+            try {
+                return JSON.parse(str);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function simpanKeGoogleSheet() {
+            const jenisSurat = document.getElementById('jenisSurat').value;
+            const noSurat = document.getElementById('noSurat').value;
+            const tglDitetapkan = document.getElementById('tglDitetapkan').value;
+            const namaKeps = document.getElementById('namaKeps').value;
+            const nipKeps = document.getElementById('nipKeps').value;
+            const keperluan = document.getElementById('keperluan').value;
+            const hari = document.getElementById('hari').value;
+            const tglKegiatan = document.getElementById('tglKegiatan').value;
+            const tempat = document.getElementById('tempat').value;
+            const waktu = document.getElementById('waktu').value;
+
+            const payload = {
+                waktuSimpan: new Date().toLocaleString('id-ID'),
+                jenisSurat: jenisSurat === 'sppd' ? 'SPPD 2 Halaman' : 'Surat Perintah Tugas',
+                noSurat: noSurat,
+                tglDitetapkan: tglDitetapkan,
+                namaKeps: namaKeps,
+                nipKeps: nipKeps,
+                keperluan: keperluan,
+                hari: hari,
+                tglKegiatan: tglKegiatan,
+                tempat: tempat,
+                waktu: waktu,
+                pegawai: JSON.parse(JSON.stringify(daftarPegawai))
+            };
+
+            // Simpan lokal dulu
+            cloudDatabase.unshift(payload);
+            localStorage.setItem('mi_cloud_history', JSON.stringify(cloudDatabase));
+            document.getElementById('badgeCount').innerText = cloudDatabase.length;
+
+            if (!userGasUrl) {
+                showToast('Tersimpan Lokal', 'Data disimpan di browser. Masukkan URL Apps Script untuk sync cloud.');
+                bukaModalScript();
+                return;
+            }
+
+            try {
+                showToast('Menyimpan...', 'Mengirim data ke Google Spreadsheet...');
+                await fetch(userGasUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                showToast('Berhasil Disimpan', `Surat ${noSurat} berhasil direkam ke Google Spreadsheet.`);
+                setTimeout(syncDataFromCloud, 2000);
+            } catch (err) {
+                console.error(err);
+                showToast('Tersimpan Offline', 'Data tersimpan lokal (Gagal kirim POST ke Apps Script).');
+            }
+        }
+
+        function renderRiwayatTable() {
+            const tbody = document.getElementById('tableRiwayatBody');
+            const emptyEl = document.getElementById('emptyRiwayat');
+            document.getElementById('badgeCount').innerText = cloudDatabase.length;
+
+            if (!cloudDatabase || cloudDatabase.length === 0) {
+                if (tbody) tbody.innerHTML = '';
+                if (emptyEl) emptyEl.classList.remove('hidden');
+                return;
+            }
+
+            if (emptyEl) emptyEl.classList.add('hidden');
+            if (tbody) tbody.innerHTML = '';
+
+            cloudDatabase.forEach((item, index) => {
+                let pegawaiUtama = '-';
+                if (item.pegawai && item.pegawai.length > 0) {
+                    pegawaiUtama = item.pegawai[0].nama;
+                    if (item.pegawai.length > 1) {
+                        pegawaiUtama += ` (+${item.pegawai.length - 1} pengikut)`;
+                    }
+                }
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition border-b">
+                        <td class="p-3 border text-center">${index + 1}</td>
+                        <td class="p-3 border text-xs text-slate-500">${item.waktuSimpan}</td>
+                        <td class="p-3 border font-semibold text-emerald-800">${item.jenisSurat}</td>
+                        <td class="p-3 border">${item.noSurat}</td>
+                        <td class="p-3 border">${pegawaiUtama}</td>
+                        <td class="p-3 border text-xs">${item.keperluan}</td>
+                        <td class="p-3 border text-center space-x-1">
+                            <button onclick="loadFromCloud('${index}')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded text-xs font-medium shadow" title="Muat Surat ke Editor">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function loadFromCloud(index) {
+            const found = cloudDatabase[index];
+            if (!found) return;
+
+            document.getElementById('jenisSurat').value = found.jenisSurat.includes('SPPD') ? 'sppd' : 'tugas';
+            document.getElementById('noSurat').value = found.noSurat || '';
+            document.getElementById('tglDitetapkan').value = found.tglDitetapkan || '';
+            document.getElementById('namaKeps').value = found.namaKeps || 'Sururiyah, S.Pd.I';
+            document.getElementById('nipKeps').value = found.nipKeps || '198304262005012012';
+            document.getElementById('keperluan').value = found.keperluan || '';
+            document.getElementById('hari').value = found.hari || '';
+            document.getElementById('tglKegiatan').value = found.tglKegiatan || '';
+            document.getElementById('tempat').value = found.tempat || '';
+            document.getElementById('waktu').value = found.waktu || '';
+            
+            if (found.pegawai && Array.isArray(found.pegawai)) {
+                daftarPegawai = JSON.parse(JSON.stringify(found.pegawai));
+            }
+
+            toggleJenisSurat();
+            renderFormPegawai();
+            switchTab('generator');
+            showToast('Dimuat', `Data surat ${found.noSurat} berhasil dimuat ke editor.`);
+        }
+
+        function bukaModalScript() {
+            document.getElementById('modalScript').classList.remove('hidden');
+        }
+
+        function tutupModalScript() {
+            document.getElementById('modalScript').classList.add('hidden');
+        }
+
+        function salinKodeScript() {
+            const box = document.getElementById('scriptCodeBox');
+            navigator.clipboard.writeText(box.innerText);
+            showToast('Disalin', 'Kode Apps Script berhasil disalin ke clipboard.');
+        }
+
+        function simpanGasUrl() {
+            const url = document.getElementById('gasUrlInput').value.trim();
+            userGasUrl = url;
+            localStorage.setItem('mi_gas_url', url);
+            tutupModalScript();
+            showToast('Disimpan', 'URL Web App Apps Script berhasil disimpan.');
+        }
+
+        function exportToCSV() {
+            if (!cloudDatabase || cloudDatabase.length === 0) {
+                showToast('Kosong', 'Tidak ada data riwayat untuk diexport.');
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,Waktu,Jenis Surat,Nomor Surat,Pegawai Utama,Keperluan\n";
+            cloudDatabase.forEach((item) => {
+                let peg = item.pegawai && item.pegawai.length > 0 ? item.pegawai[0].nama : '-';
+                csvContent += `"${item.waktuSimpan}","${item.jenisSurat}","${item.noSurat}","${peg}","${item.keperluan}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "riwayat_sppd_mi_tarbiyatul_ulum.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Unduh CSV', 'File CSV riwayat berhasil diunduh.');
+        }
+
+        const suratForm = document.getElementById('suratForm');
+        if (suratForm) {
+            suratForm.addEventListener('input', renderOutput);
+        }
+    </script>
+</body>
+</html>
